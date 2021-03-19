@@ -99,6 +99,23 @@ public class ChessMatch {
 			piecesOnTheBoard.remove(capturedPiece);
 			capturedPieces.add(capturedPiece);
 		}
+		//SPECIAL MOVE CASTLING - "SMALL" CASTLING (KINGSIDE ROOK)
+		if (p instanceof King && target.getColumn() == source.getColumn() +2) {
+			Position sourceR = new Position(source.getRow(), source.getColumn()+3);
+			Position targetR = new Position(source.getRow(), source.getColumn()+1);
+			ChessPiece rook = (ChessPiece)board.removePiece(sourceR);
+			board.placePiece(rook, targetR);
+			rook.increaseMoveCount();
+		}
+		//SPECIAL MOVE CASTLING - "LONG" CASTLING (QUEENSIDE ROOK)
+				if (p instanceof King && target.getColumn() == source.getColumn() -2) {
+					Position sourceR = new Position(source.getRow(), source.getColumn()-4);
+					Position targetR = new Position(source.getRow(), source.getColumn()-1);
+					ChessPiece rook = (ChessPiece)board.removePiece(sourceR);
+					board.placePiece(rook, targetR);
+					rook.increaseMoveCount();
+				}
+		
 		return capturedPiece;
 	}
 	
@@ -113,6 +130,24 @@ public class ChessMatch {
 			capturedPieces.remove(capturedPiece);
 			piecesOnTheBoard.add(capturedPiece);
 		}
+	
+		//UNDO SPECIAL MOVE CASTLING - "SMALL" CASTLING (KINGSIDE ROOK)
+				if (p instanceof King && target.getColumn() == source.getColumn() +2) {
+					Position sourceR = new Position(source.getRow(), source.getColumn()+3);
+					Position targetR = new Position(source.getRow(), source.getColumn()+1);
+					ChessPiece rook = (ChessPiece)board.removePiece(targetR);
+					board.placePiece(rook, sourceR);
+					rook.decreaseMoveCount();
+				}
+				//SPECIAL MOVE CASTLING - "LONG" CASTLING (QUEENSIDE ROOK)
+						if (p instanceof King && target.getColumn() == source.getColumn() -2) {
+							Position sourceR = new Position(source.getRow(), source.getColumn()-4);
+							Position targetR = new Position(source.getRow(), source.getColumn()-1);
+							ChessPiece rook = (ChessPiece)board.removePiece(targetR);
+							board.placePiece(rook, sourceR);
+							rook.decreaseMoveCount();
+						}
+	
 	}
 	
 	private void validateTargetPosition(Position source, Position target) {
